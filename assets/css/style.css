@@ -153,19 +153,13 @@ svg { width: 16px; height: 16px; fill: currentColor; flex: none; }
 
 /* Cards ----------------------------------------------------------------- */
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 24px; }
-/* .card stays still and owns hover; .card-face is what spins. */
-.card { position: relative; display: flex; border-radius: var(--radius); }
-.card[data-hover] { z-index: 2; }
-.card-face {
-  position: relative; flex: 1; display: flex; flex-direction: column;
+.card {
+  position: relative; display: flex; flex-direction: column;
   background: var(--surface); border-radius: var(--radius); overflow: hidden;
-  box-shadow: var(--shadow); will-change: transform;
-  transition: box-shadow 250ms var(--ease);
+  box-shadow: var(--shadow);
 }
-.card:hover .card-face, .card:focus-within .card-face { box-shadow: var(--shadow-hover); }
-.card-back { position: absolute; inset: 0; z-index: 3; background: var(--surface-2); opacity: 0; pointer-events: none; }
 .card-media { position: relative; aspect-ratio: 16 / 10; background: var(--surface-2); overflow: hidden; }
-.card-media > img, .card-media > video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity 250ms var(--ease); }
+.card-media > img, .card-media > video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .card-media > video, .card-media > .card-demo { opacity: 0; }
 .card[data-playing] .card-media > video, .card[data-playing] .card-media > .card-demo { opacity: 1; }
 .card-fallback { position: absolute; inset: 0; display: grid; place-items: center; font-size: 3rem; font-weight: 700; color: var(--muted); }
@@ -191,7 +185,7 @@ svg { width: 16px; height: 16px; fill: currentColor; flex: none; }
 
 /* Catalog --------------------------------------------------------------- */
 .toolbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; }
-.toolbar-right { display: flex; gap: 8px; flex-wrap: wrap; }
+.toolbar-right { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 .segmented { display: inline-flex; padding: 2px; background: var(--surface-2); border-radius: 10px; }
 .segmented button {
   border: 0; background: none; min-height: 32px; padding: 0 16px; border-radius: 8px;
@@ -219,12 +213,22 @@ a.chip:hover { text-decoration: none; border-color: var(--muted); }
 button.chip:hover { border-color: var(--muted); }
 .chip[aria-pressed="true"] { background: var(--text); border-color: var(--text); color: var(--bg); }
 .count { margin: 24px 0 16px; font-size: 0.875rem; color: var(--muted); font-variant-numeric: tabular-nums; }
-.group + .group { margin-top: 48px; }
-.group-head { display: inline-flex; align-items: center; gap: 12px; margin-bottom: 16px; color: var(--text); }
-.group-head:hover { text-decoration: none; }
-.group-head img { border-radius: 50%; }
+.group { position: relative; }
+.group + .group { margin-top: 32px; }
+.group-head {
+  display: flex; align-items: center; gap: 12px; padding: 8px 96px 8px 0;
+  list-style: none; cursor: pointer; border-radius: var(--radius-sm);
+}
+.group-head::-webkit-details-marker { display: none; }
+.group-head img { border-radius: 50%; background: var(--surface-2); }
 .group-head strong { display: block; font-size: 1.125rem; }
 .group-head small { display: block; color: var(--muted); font-size: 0.8125rem; }
+.group-count { color: var(--muted); font-size: 0.875rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.group-chevron { color: var(--muted); }
+.group details:not([open]) .group-chevron { transform: rotate(-90deg); }
+.group-profile { position: absolute; right: 0; top: 18px; font-size: 0.875rem; }
+.group details > .grid, .group-empty { margin-top: 12px; }
+.group-empty { font-size: 0.9375rem; }
 .empty { padding: 64px 0; text-align: center; color: var(--muted); }
 .empty .btn { margin-top: 16px; }
 
@@ -315,5 +319,5 @@ button.chip:hover { border-color: var(--muted); }
   *, *::before, *::after { transition-duration: 1ms !important; animation-duration: 1ms !important; }
 }
 @media (prefers-contrast: more) {
-  .card-face, .repos, .facts, .member a { box-shadow: none; border: 1px solid var(--text); }
+  .card, .repos, .facts, .member a { box-shadow: none; border: 1px solid var(--text); }
 }

@@ -52,60 +52,23 @@
     }
   });
 
-  // Card hover: one horizontal 3D turn that grows the card, then the demo plays in place.
-  // An opaque back cover hides the mirrored content while the face points away.
-  // Leaving mid-turn finishes the turn quickly, then settles back to rest.
+  // Card hover: play the demo inside the thumbnail frame (loaded on first hover only).
   if (!reduceMotion) {
-    const TURN = [
-      { transform: 'perspective(1200px) rotateY(0turn) scale(1)' },
-      { transform: 'perspective(1200px) rotateY(1turn) scale(1.04)' },
-    ];
-    // Angle is linear in eased progress, so 90° and 270° sit at offsets 0.25 and 0.75.
-    const BACK = [
-      { opacity: 0, offset: 0 }, { opacity: 0, offset: 0.25 }, { opacity: 1, offset: 0.25 },
-      { opacity: 1, offset: 0.75 }, { opacity: 0, offset: 0.75 }, { opacity: 0, offset: 1 },
-    ];
-    const TIMING = { duration: 650, easing: 'cubic-bezier(0.45, 0, 0.2, 1)' };
-    const turns = new WeakMap();
-    const settle = (face) => {
-      const from = getComputedStyle(face).transform;
-      face.getAnimations().forEach((a) => a.cancel());
-      face.animate([{ transform: from }, { transform: 'none' }], { duration: 260, easing: 'ease-out' });
-    };
-    const enter = (card) => {
-      card.setAttribute('data-hover', '');
-      const t = turns.get(card);
-      if (t && t.face.playState === 'running') { t.face.playbackRate = 1; t.back.playbackRate = 1; return; }
-      const face = $('.card-face', card);
-      const m = $('.card-media video, .card-media .card-demo', card);
-      if (m && !m.src) m.src = m.dataset.src; // start loading while it turns
-      face.getAnimations().forEach((a) => a.cancel());
-      const turn = { face: face.animate(TURN, { ...TIMING, fill: 'forwards' }), back: $('.card-back', card).animate(BACK, TIMING) };
-      turns.set(card, turn);
-      turn.face.finished.then(() => {
-        if (!card.hasAttribute('data-hover')) return settle(face);
-        if (!m) return;
-        card.setAttribute('data-playing', '');
-        if (m.play) m.play().catch(() => {});
-      }, () => {});
-    };
-    const leave = (card) => {
-      card.removeAttribute('data-hover');
-      card.removeAttribute('data-playing');
-      const v = $('.card-media video', card);
-      if (v) { v.pause(); v.currentTime = 0; }
-      const t = turns.get(card);
-      if (!t) return;
-      if (t.face.playState === 'running') { t.face.playbackRate = 2.5; t.back.playbackRate = 2.5; }
-      else settle($('.card-face', card));
-    };
     document.addEventListener('pointerover', (e) => {
       const card = e.target.closest('.card');
-      if (card && e.pointerType === 'mouse' && !card.contains(e.relatedTarget)) enter(card);
+      if (!card || e.pointerType !== 'mouse' || card.contains(e.relatedTarget)) return;
+      const m = $('.card-media video, .card-media .card-demo', card);
+      if (!m) return;
+      if (!m.src) m.src = m.dataset.src;
+      card.setAttribute('data-playing', '');
+      if (m.play) m.play().catch(() => {});
     });
     document.addEventListener('pointerout', (e) => {
       const card = e.target.closest('.card');
-      if (card && !card.contains(e.relatedTarget)) leave(card);
+      if (!card || card.contains(e.relatedTarget)) return;
+      card.removeAttribute('data-playing');
+      const v = $('.card-media video', card);
+      if (v) { v.pause(); v.currentTime = 0; }
     });
   }
 
@@ -147,6 +110,34 @@
     const sortSel = $('[data-filter="sort"]', catalog);
     search.value = state.q;
 
+    // People view: groups ordered by project count, collapsed ones remembered per browser.
+    const groups = $$('[data-group]', catalog);
+    const peoplePanel = $('[data-panel="people"]', catalog);
+    groups
+      .sort((a, b) => b.dataset.total - a.dataset.total || a.dataset.name.localeCompare(b.dataset.name, 'ko'))
+      .forEach((g) => peoplePanel.appendChild(g));
+    const toggleAll = $('[data-toggle-all]', catalog);
+    const KEY = 'collapsed-members';
+    let collapsed = [];
+    try { collapsed = JSON.parse(localStorage.getItem(KEY)) || []; } catch (e) {}
+    const details = (g) => $('details', g);
+    const syncToggleAll = () => {
+      toggleAll.textContent = groups.some((g) => details(g).open) ? '모두 접기' : '모두 펼치기';
+    };
+    groups.forEach((g) => {
+      if (collapsed.includes(g.dataset.group)) details(g).open = false;
+      details(g).addEventListener('toggle', () => {
+        const closed = groups.filter((x) => !details(x).open).map((x) => x.dataset.group);
+        try { localStorage.setItem(KEY, JSON.stringify(closed)); } catch (e) {}
+        syncToggleAll();
+      });
+    });
+    toggleAll.addEventListener('click', () => {
+      const open = !groups.some((g) => details(g).open);
+      groups.forEach((g) => { details(g).open = open; });
+    });
+    syncToggleAll();
+
     const sortGrid = (grid) => {
       const cards = $$('.card', grid);
       cards.sort((a, b) => state.sort === 'name'
@@ -164,9 +155,13 @@
 
       $$('.card', catalog).forEach((c) => { c.hidden = !match(c); });
       $$('.grid', catalog).forEach(sortGrid);
+      const filtering = Boolean(state.q || state.tag);
       $$('[data-group]', catalog).forEach((g) => {
-        g.hidden = (state.author && g.dataset.group !== state.author) || !$('.card:not([hidden])', g);
+        const n = $$('.card:not([hidden])', g).length;
+        $('[data-group-count]', g).textContent = n;
+        g.hidden = (state.author && g.dataset.group !== state.author) || (filtering && n === 0);
       });
+      toggleAll.hidden = state.view !== 'people';
 
       const panel = $(`[data-panel="${state.view}"]`, catalog);
       $$('[data-panel]', catalog).forEach((p) => { p.hidden = p !== panel; });

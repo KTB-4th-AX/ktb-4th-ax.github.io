@@ -12,6 +12,7 @@ layout: default
       <button type="button" data-view="people" aria-pressed="false">사람별 보기</button>
     </div>
     <div class="toolbar-right">
+      <button type="button" class="btn btn-secondary" data-toggle-all hidden>모두 접기</button>
       <label class="select"><span class="sr-only">동아리원</span>
         <select data-filter="author">
           <option value="">모든 동아리원</option>
@@ -45,14 +46,23 @@ layout: default
   <div data-panel="people" hidden>
     {%- for m in site.members -%}
     {%- assign mine = projects | where_exp: 'p', 'p.authors contains m.github' -%}
-    <section class="group" data-group="{{ m.github }}">
-      <a class="group-head" href="{{ m.url | relative_url }}">
-        <img src="https://github.com/{{ m.github }}.png?size=96" alt="" width="40" height="40" loading="lazy">
-        <span><strong>{{ m.name }}</strong>{% if m.role %}<small>{{ m.role }}</small>{% endif %}</span>
-      </a>
-      <div class="grid">
-        {%- for p in mine -%}{% include card.html p=p %}{%- endfor -%}
-      </div>
+    <section class="group" data-group="{{ m.github }}" data-total="{{ mine.size }}" data-name="{{ m.name | escape }}">
+      <details open>
+        <summary class="group-head">
+          <img src="https://github.com/{{ m.github }}.png?size=96" alt="" width="40" height="40" loading="lazy">
+          <span><strong>{{ m.name }}</strong>{% if m.role %}<small>{{ m.role }}</small>{% endif %}</span>
+          <span class="group-count"><span data-group-count>{{ mine.size }}</span>개</span>
+          <svg class="group-chevron" aria-hidden="true" viewBox="0 0 16 16"><path d="M3.2 6.2 4.3 5.1 8 8.8l3.7-3.7 1.1 1.1L8 11z"/></svg>
+        </summary>
+        {%- if mine.size > 0 -%}
+        <div class="grid">
+          {%- for p in mine -%}{% include card.html p=p %}{%- endfor -%}
+        </div>
+        {%- else -%}
+        <p class="muted group-empty">등록한 프로젝트가 없습니다.</p>
+        {%- endif -%}
+      </details>
+      <a class="group-profile" href="{{ m.url | relative_url }}">프로필 <span aria-hidden="true">›</span></a>
     </section>
     {%- endfor -%}
   </div>

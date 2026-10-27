@@ -152,7 +152,7 @@ svg { width: 16px; height: 16px; fill: currentColor; flex: none; }
 .notfound p:last-child { margin-top: 28px; }
 
 /* Cards ----------------------------------------------------------------- */
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 24px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 24px; align-items: start; }
 .card {
   position: relative; display: flex; flex-direction: column;
   background: var(--surface); border-radius: var(--radius); overflow: hidden;

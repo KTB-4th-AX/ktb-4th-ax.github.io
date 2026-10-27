@@ -3,6 +3,9 @@ layout: default
 ---
 {%- assign projects = site.projects | sort: 'date' | reverse -%}
 {%- assign tags = site.projects | map: 'tags' | join: ',' | split: ',' | uniq | sort -%}
+{%- assign leads = site.members | where: 'role', '동아리장' -%}
+{%- assign others = site.members | where_exp: 'm', "m.role != '동아리장'" | sort: 'name' -%}
+{%- assign members = leads | concat: others -%}
 <h1 class="sr-only">프로젝트</h1>
 
 <div class="wrap catalog" id="catalog">
@@ -15,7 +18,7 @@ layout: default
       <label class="select"><span class="sr-only">동아리원</span>
         <select data-filter="author">
           <option value="">모든 동아리원</option>
-          {%- for m in site.members -%}<option value="{{ m.github }}">{{ m.name }}</option>{%- endfor -%}
+          {%- for m in members -%}<option value="{{ m.github }}">{{ m.name }}</option>{%- endfor -%}
         </select>
       </label>
       <label class="select"><span class="sr-only">정렬</span>

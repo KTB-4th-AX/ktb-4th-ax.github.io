@@ -9,6 +9,7 @@
   data-tags="{{ p.tags | join: ',' | escape }}"
   data-authors="{{ p.authors | join: ',' | escape }}"
   data-date="{{ p.date | date: '%Y-%m-%d' }}">
+  {%- if p.thumbnail or p.demo %}
   <div class="card-media">
     {%- if p.thumbnail -%}
       <img src="{{ p.thumbnail | relative_url }}" alt="" loading="lazy" decoding="async">
@@ -23,6 +24,7 @@
       {%- endif -%}
     {%- endif -%}
   </div>
+  {%- endif %}
   <div class="card-body">
     <h3 class="card-title"><a href="{{ p.url | relative_url }}">{{ p.title }}</a></h3>
     <p class="card-desc">{{ p.description }}</p>

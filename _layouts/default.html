@@ -23,11 +23,10 @@
       <a class="brand" href="{{ '/' | relative_url }}">KTB AX</a>
       <nav class="nav-links" aria-label="주요 메뉴">
         {% assign path = page.url %}
-        <a href="{{ '/plugins/' | relative_url }}"{% if path contains '/plugins/' %} aria-current="page"{% endif %}>프로젝트</a>
+        <a href="{{ '/' | relative_url }}"{% if path == '/' or path contains '/plugins/' %} aria-current="page"{% endif %}>프로젝트</a>
         <a href="{{ '/members/' | relative_url }}"{% if path contains '/members/' %} aria-current="page"{% endif %}>동아리원</a>
-        <a href="{{ '/records/' | relative_url }}"{% if path contains '/records/' %} aria-current="page"{% endif %}>활동 기록</a>
       </nav>
-      <form class="search" action="{{ '/plugins/' | relative_url }}" role="search">
+      <form class="search" action="{{ '/' | relative_url }}" role="search">
         <svg aria-hidden="true" viewBox="0 0 16 16"><path d="M11.5 10.1 15 13.6l-1.4 1.4-3.5-3.5a6 6 0 1 1 1.4-1.4ZM6.5 11a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9Z"/></svg>
         <label class="sr-only" for="q">프로젝트 검색</label>
         <input id="q" name="q" type="search" placeholder="프로젝트 검색" autocomplete="off">

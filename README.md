@@ -1,6 +1,6 @@
 # KTB AX
 
-KTB 4기 AX 동아리원이 만든 플러그인·도구와 활동 기록을 모은 사이트입니다.
+KTB 4기 AX 동아리원이 만든 플러그인·도구를 모은 사이트입니다.
 
 ## 추가하기
 
@@ -8,17 +8,6 @@ KTB 4기 AX 동아리원이 만든 플러그인·도구와 활동 기록을 모�
 |---|---|---|
 | 프로젝트 카드 | `_projects/이름.md` | `templates/project.md` |
 | 동아리원 | `_members/github-아이디.md` | `templates/member.md` |
-| 활동 기록 | `_posts/YYYY-MM-DD-제목.md` | 아래 예시 |
-
-활동 기록 예시:
-
-```markdown
----
-title: 3주차 모임
-video: /assets/videos/2026-11-10-week3.mp4   # 영상이 없으면 지웁니다
----
-본문 (마크다운)
-```
 
 이미지는 `assets/img/`, 영상은 `assets/videos/`에 둡니다. `main`에 push하면 GitHub Pages가 자동으로 빌드합니다.
 

@@ -6,7 +6,7 @@ layout: default
 {%- assign is_video = false -%}
 {%- if ext == 'mp4' or ext == 'webm' or ext == 'mov' -%}{%- assign is_video = true -%}{%- endif -%}
 <article class="wrap detail">
-  <nav class="crumbs" aria-label="현재 위치"><a href="{{ '/plugins/' | relative_url }}">프로젝트</a><span aria-hidden="true">›</span><span aria-current="page">{{ p.title }}</span></nav>
+  <nav class="crumbs" aria-label="현재 위치"><a href="{{ '/' | relative_url }}">프로젝트</a><span aria-hidden="true">›</span><span aria-current="page">{{ p.title }}</span></nav>
 
   <header class="detail-head">
     <div class="detail-icon" aria-hidden="true">
@@ -70,7 +70,7 @@ layout: default
           {%- endfor -%}
         </ul></dd></div>
         {%- if p.tags.size > 0 -%}
-        <div><dt>태그</dt><dd class="tag-list">{% for t in p.tags %}<a class="chip" href="{{ '/plugins/' | relative_url }}?tag={{ t | url_encode }}">{{ t }}</a>{% endfor %}</dd></div>
+        <div><dt>태그</dt><dd class="tag-list">{% for t in p.tags %}<a class="chip" href="{{ '/' | relative_url }}?tag={{ t | url_encode }}">{{ t }}</a>{% endfor %}</dd></div>
         {%- endif -%}
         <div><dt>등록일</dt><dd><time datetime="{{ p.date | date: '%Y-%m-%d' }}">{{ p.date | date: '%Y년 %-m월 %-d일' }}</time></dd></div>
       </dl>

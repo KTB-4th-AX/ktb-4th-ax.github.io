@@ -52,38 +52,46 @@
     }
   });
 
-  // Card hover: play the demo inside the thumbnail frame (loaded on first hover only).
+  // Card hover: one quick spin that grows the card, then the demo plays in place.
+  // Leaving mid-spin unwinds from the current angle instead of jumping back.
   if (!reduceMotion) {
-    const start = (card) => {
-      const m = $('.card-media video, .card-media .card-demo', card);
-      if (!m) return;
-      if (!m.src) m.src = m.dataset.src;
-      card.setAttribute('data-playing', '');
-      if (m.play) m.play().catch(() => {});
+    const SPIN = [{ transform: 'rotate(0turn) scale(1)' }, { transform: 'rotate(1turn) scale(1.04)' }];
+    const spins = new WeakMap();
+    const media = (card) => $('.card-media video, .card-media .card-demo', card);
+    const enter = (card) => {
+      const m = media(card);
+      if (m && !m.src) m.src = m.dataset.src; // start loading while it spins
+      card.setAttribute('data-hover', '');
+      const face = $('.card-face', card);
+      face.getAnimations().forEach((x) => x.cancel());
+      const anim = face.animate(SPIN, { duration: 650, easing: 'cubic-bezier(0.45, 0, 0.2, 1)', fill: 'forwards' });
+      spins.set(card, anim);
+      anim.finished.then(() => {
+        if (!card.hasAttribute('data-hover') || !m) return;
+        card.setAttribute('data-playing', '');
+        if (m.play) m.play().catch(() => {});
+      }, () => {});
     };
-    const stop = (card) => {
-      const v = $('.card-media video', card);
+    const leave = (card) => {
+      card.removeAttribute('data-hover');
       card.removeAttribute('data-playing');
+      const v = $('.card-media video', card);
       if (v) { v.pause(); v.currentTime = 0; }
+      const anim = spins.get(card);
+      if (!anim) return;
+      const face = $('.card-face', card);
+      const from = getComputedStyle(face).transform;
+      anim.cancel();
+      face.animate([{ transform: from }, { transform: 'none' }], { duration: 260, easing: 'ease-out' });
     };
     document.addEventListener('pointerover', (e) => {
       const card = e.target.closest('.card');
-      if (card && e.pointerType === 'mouse' && !card.contains(e.relatedTarget)) start(card);
+      if (card && e.pointerType === 'mouse' && !card.contains(e.relatedTarget)) enter(card);
     });
     document.addEventListener('pointerout', (e) => {
       const card = e.target.closest('.card');
-      if (card && !card.contains(e.relatedTarget)) stop(card);
+      if (card && !card.contains(e.relatedTarget)) leave(card);
     });
-  }
-
-  // Home feature: play the demo while it is on screen.
-  const feature = $('video[data-autoplay]');
-  if (feature && !reduceMotion) {
-    new IntersectionObserver(([e]) => {
-      if (!e.isIntersecting) return feature.pause();
-      if (!feature.src) feature.src = feature.dataset.src;
-      feature.play().catch(() => {});
-    }, { threshold: 0.3 }).observe(feature);
   }
 
   // Detail page: demo / screenshot tabs.

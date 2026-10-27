@@ -2,74 +2,63 @@
 layout: default
 ---
 {%- assign projects = site.projects | sort: 'date' | reverse -%}
-{%- assign f = projects.first -%}
-{%- if f -%}
-{%- assign ext = f.demo | split: '.' | last | downcase -%}
-<section class="feature wrap" aria-label="{{ f.title | escape }}">
-  <a class="feature-stage" href="{{ f.url | relative_url }}" tabindex="-1" aria-hidden="true">
-    {%- if ext == 'mp4' or ext == 'webm' or ext == 'mov' -%}
-      <video muted loop playsinline preload="none" data-autoplay data-src="{{ f.demo | relative_url }}" {% if f.thumbnail %}poster="{{ f.thumbnail | relative_url }}"{% endif %}></video>
-    {%- elsif f.demo -%}
-      <img src="{{ f.demo | relative_url }}" alt="">
-    {%- elsif f.thumbnail -%}
-      <img src="{{ f.thumbnail | relative_url }}" alt="">
-    {%- endif -%}
-  </a>
-  <div class="feature-info">
-    <h1><a href="{{ f.url | relative_url }}">{{ f.title }}</a></h1>
-    <p class="muted">{{ f.description }}</p>
-    <ul class="card-authors">
-      {%- for a in f.authors -%}{%- assign m = site.members | where: 'github', a | first -%}
-      <li><img src="https://github.com/{{ a }}.png?size=48" alt="" width="20" height="20">{{ m.name | default: a }}</li>
-      {%- endfor -%}
-    </ul>
-    <div class="feature-actions">
-      {%- if f.install -%}
-        {%- if f.install contains '://' -%}
-          <a class="btn btn-primary" href="{{ f.install }}">설치</a>
-        {%- else -%}
-          <button class="cmd" type="button" data-copy="{{ f.install | escape }}" aria-label="설치 명령 복사: {{ f.install | escape }}"><code>{{ f.install }}</code><svg aria-hidden="true" viewBox="0 0 16 16"><path d="M5 1h8a2 2 0 0 1 2 2v8h-1.5V3a.5.5 0 0 0-.5-.5H5V1ZM3 4h7a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Zm0 1.5a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5V6a.5.5 0 0 0-.5-.5H3Z"/></svg></button>
-        {%- endif -%}
-      {%- endif -%}
-      {%- if f.repo -%}<a class="icon-btn" href="{{ f.repo }}" aria-label="{{ f.title | escape }} GitHub 레포지토리">{% include github.svg %}</a>{%- endif -%}
-      <a class="btn btn-link" href="{{ f.url | relative_url }}">자세히 <span aria-hidden="true">›</span></a>
+{%- assign tags = site.projects | map: 'tags' | join: ',' | split: ',' | uniq | sort -%}
+<h1 class="sr-only">프로젝트</h1>
+
+<div class="wrap catalog" id="catalog">
+  <div class="toolbar">
+    <div class="segmented" role="group" aria-label="보기 방식">
+      <button type="button" data-view="all" aria-pressed="true">모든 프로젝트</button>
+      <button type="button" data-view="people" aria-pressed="false">사람별 보기</button>
+    </div>
+    <div class="toolbar-right">
+      <label class="select"><span class="sr-only">동아리원</span>
+        <select data-filter="author">
+          <option value="">모든 동아리원</option>
+          {%- for m in site.members -%}<option value="{{ m.github }}">{{ m.name }}</option>{%- endfor -%}
+        </select>
+      </label>
+      <label class="select"><span class="sr-only">정렬</span>
+        <select data-filter="sort">
+          <option value="new">최신순</option>
+          <option value="name">이름순</option>
+        </select>
+      </label>
     </div>
   </div>
-</section>
-{%- endif -%}
 
-<section class="section wrap" aria-labelledby="h-new">
-  <div class="section-head">
-    <h2 id="h-new">프로젝트 <span class="num">{{ site.projects.size }}</span></h2>
-    <a class="more" href="{{ '/plugins/' | relative_url }}">전체 보기 <span aria-hidden="true">›</span></a>
+  {%- if tags.size > 0 -%}
+  <div class="chips" role="group" aria-label="태그">
+    <button type="button" class="chip" data-tag="" aria-pressed="true">전체</button>
+    {%- for t in tags -%}<button type="button" class="chip" data-tag="{{ t | escape }}" aria-pressed="false">{{ t }}</button>{%- endfor -%}
   </div>
-  <div class="grid">
-    {%- for p in projects limit: 6 -%}{% include card.html p=p %}{%- endfor -%}
-  </div>
-</section>
+  {%- endif -%}
 
-<section class="section wrap" aria-labelledby="h-people">
-  <div class="section-head">
-    <h2 id="h-people">동아리원 <span class="num">{{ site.members.size }}</span></h2>
-    <a class="more" href="{{ '/members/' | relative_url }}">전체 보기 <span aria-hidden="true">›</span></a>
+  <p class="count" aria-live="polite"><span data-count>{{ site.projects.size }}</span>개 프로젝트</p>
+
+  <div data-panel="all">
+    <div class="grid">
+      {%- for p in projects -%}{% include card.html p=p %}{%- endfor -%}
+    </div>
   </div>
-  <ul class="people-row">
+
+  <div data-panel="people" hidden>
     {%- for m in site.members -%}
-    <li><a href="{{ m.url | relative_url }}"><img src="https://github.com/{{ m.github }}.png?size=160" alt="" width="72" height="72" loading="lazy"><span>{{ m.name }}</span></a></li>
+    {%- assign mine = projects | where_exp: 'p', 'p.authors contains m.github' -%}
+    <section class="group" data-group="{{ m.github }}">
+      <a class="group-head" href="{{ m.url | relative_url }}">
+        <img src="https://github.com/{{ m.github }}.png?size=96" alt="" width="40" height="40" loading="lazy">
+        <span><strong>{{ m.name }}</strong>{% if m.role %}<small>{{ m.role }}</small>{% endif %}</span>
+      </a>
+      <div class="grid">
+        {%- for p in mine -%}{% include card.html p=p %}{%- endfor -%}
+      </div>
+    </section>
     {%- endfor -%}
-  </ul>
-</section>
-
-{%- if site.posts.size > 0 -%}
-<section class="section wrap" aria-labelledby="h-rec">
-  <div class="section-head">
-    <h2 id="h-rec">활동 기록 <span class="num">{{ site.posts.size }}</span></h2>
-    <a class="more" href="{{ '/records/' | relative_url }}">전체 보기 <span aria-hidden="true">›</span></a>
   </div>
-  <ol class="rows">
-    {%- for r in site.posts limit: 4 -%}
-    <li><a href="{{ r.url | relative_url }}"><time datetime="{{ r.date | date: '%Y-%m-%d' }}">{{ r.date | date: '%Y.%m.%d' }}</time><span class="row-title">{{ r.title }}</span>{% if r.video %}<span class="row-tag">영상</span>{% endif %}</a></li>
-    {%- endfor -%}
-  </ol>
-</section>
-{%- endif -%}
+
+  <div class="empty" hidden>
+    <p>조건에 맞는 프로젝트가 없습니다.</p>
+    <button type="button" class="btn btn-secondary" data-reset>필터 초기화</button>
+  </div>
+</div>

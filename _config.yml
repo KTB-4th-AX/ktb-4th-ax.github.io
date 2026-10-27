@@ -1,10 +1,9 @@
 # url/baseurl은 GitHub Pages가 레포 이름에 맞춰 자동으로 채운다.
 title: KTB AX
-description: 카카오테크 부트캠프 4기 AX 동아리가 만든 도구와 활동 기록
+description: 카카오테크 부트캠프 4기 AX 동아리가 만든 도구
 lang: ko
 timezone: Asia/Seoul
 markdown: kramdown
-permalink: /records/:year/:month/:day/:title/
 
 collections:
   projects:
@@ -19,7 +18,5 @@ defaults:
     values: { layout: project }
   - scope: { type: members }
     values: { layout: member }
-  - scope: { type: posts }
-    values: { layout: record }
 
 exclude: [README.md, templates]

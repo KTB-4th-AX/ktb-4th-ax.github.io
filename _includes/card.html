@@ -8,6 +8,7 @@
   data-tags="{{ p.tags | join: ',' | escape }}"
   data-authors="{{ p.authors | join: ',' | escape }}"
   data-date="{{ p.date | date: '%Y-%m-%d' }}">
+  <div class="card-face">
   <div class="card-media">
     {%- if p.thumbnail -%}
       <img src="{{ p.thumbnail | relative_url }}" alt="" loading="lazy" decoding="async">
@@ -43,5 +44,6 @@
     {%- if p.repo -%}
       <a class="icon-btn" href="{{ p.repo }}" aria-label="{{ p.title | escape }} GitHub 레포지토리">{% include github.svg %}</a>
     {%- endif -%}
+  </div>
   </div>
 </article>

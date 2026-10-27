@@ -163,6 +163,7 @@ svg { width: 16px; height: 16px; fill: currentColor; flex: none; }
   transition: box-shadow 250ms var(--ease);
 }
 .card:hover .card-face, .card:focus-within .card-face { box-shadow: var(--shadow-hover); }
+.card-back { position: absolute; inset: 0; z-index: 3; background: var(--surface-2); opacity: 0; pointer-events: none; }
 .card-media { position: relative; aspect-ratio: 16 / 10; background: var(--surface-2); overflow: hidden; }
 .card-media > img, .card-media > video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity 250ms var(--ease); }
 .card-media > video, .card-media > .card-demo { opacity: 0; }

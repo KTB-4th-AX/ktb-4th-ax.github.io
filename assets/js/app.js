@@ -52,22 +52,39 @@
     }
   });
 
-  // Card hover: one quick spin that grows the card, then the demo plays in place.
-  // Leaving mid-spin unwinds from the current angle instead of jumping back.
+  // Card hover: one horizontal 3D turn that grows the card, then the demo plays in place.
+  // An opaque back cover hides the mirrored content while the face points away.
+  // Leaving mid-turn finishes the turn quickly, then settles back to rest.
   if (!reduceMotion) {
-    const SPIN = [{ transform: 'rotate(0turn) scale(1)' }, { transform: 'rotate(1turn) scale(1.04)' }];
-    const spins = new WeakMap();
-    const media = (card) => $('.card-media video, .card-media .card-demo', card);
+    const TURN = [
+      { transform: 'perspective(1200px) rotateY(0turn) scale(1)' },
+      { transform: 'perspective(1200px) rotateY(1turn) scale(1.04)' },
+    ];
+    // Angle is linear in eased progress, so 90° and 270° sit at offsets 0.25 and 0.75.
+    const BACK = [
+      { opacity: 0, offset: 0 }, { opacity: 0, offset: 0.25 }, { opacity: 1, offset: 0.25 },
+      { opacity: 1, offset: 0.75 }, { opacity: 0, offset: 0.75 }, { opacity: 0, offset: 1 },
+    ];
+    const TIMING = { duration: 650, easing: 'cubic-bezier(0.45, 0, 0.2, 1)' };
+    const turns = new WeakMap();
+    const settle = (face) => {
+      const from = getComputedStyle(face).transform;
+      face.getAnimations().forEach((a) => a.cancel());
+      face.animate([{ transform: from }, { transform: 'none' }], { duration: 260, easing: 'ease-out' });
+    };
     const enter = (card) => {
-      const m = media(card);
-      if (m && !m.src) m.src = m.dataset.src; // start loading while it spins
       card.setAttribute('data-hover', '');
+      const t = turns.get(card);
+      if (t && t.face.playState === 'running') { t.face.playbackRate = 1; t.back.playbackRate = 1; return; }
       const face = $('.card-face', card);
-      face.getAnimations().forEach((x) => x.cancel());
-      const anim = face.animate(SPIN, { duration: 650, easing: 'cubic-bezier(0.45, 0, 0.2, 1)', fill: 'forwards' });
-      spins.set(card, anim);
-      anim.finished.then(() => {
-        if (!card.hasAttribute('data-hover') || !m) return;
+      const m = $('.card-media video, .card-media .card-demo', card);
+      if (m && !m.src) m.src = m.dataset.src; // start loading while it turns
+      face.getAnimations().forEach((a) => a.cancel());
+      const turn = { face: face.animate(TURN, { ...TIMING, fill: 'forwards' }), back: $('.card-back', card).animate(BACK, TIMING) };
+      turns.set(card, turn);
+      turn.face.finished.then(() => {
+        if (!card.hasAttribute('data-hover')) return settle(face);
+        if (!m) return;
         card.setAttribute('data-playing', '');
         if (m.play) m.play().catch(() => {});
       }, () => {});
@@ -77,12 +94,10 @@
       card.removeAttribute('data-playing');
       const v = $('.card-media video', card);
       if (v) { v.pause(); v.currentTime = 0; }
-      const anim = spins.get(card);
-      if (!anim) return;
-      const face = $('.card-face', card);
-      const from = getComputedStyle(face).transform;
-      anim.cancel();
-      face.animate([{ transform: from }, { transform: 'none' }], { duration: 260, easing: 'ease-out' });
+      const t = turns.get(card);
+      if (!t) return;
+      if (t.face.playState === 'running') { t.face.playbackRate = 2.5; t.back.playbackRate = 2.5; }
+      else settle($('.card-face', card));
     };
     document.addEventListener('pointerover', (e) => {
       const card = e.target.closest('.card');

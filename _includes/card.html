@@ -9,6 +9,7 @@
   data-authors="{{ p.authors | join: ',' | escape }}"
   data-date="{{ p.date | date: '%Y-%m-%d' }}">
   <div class="card-face">
+  <span class="card-back" aria-hidden="true"></span>
   <div class="card-media">
     {%- if p.thumbnail -%}
       <img src="{{ p.thumbnail | relative_url }}" alt="" loading="lazy" decoding="async">

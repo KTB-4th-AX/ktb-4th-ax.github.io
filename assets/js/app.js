@@ -76,6 +76,16 @@
     });
   }
 
+  // Home feature: play the demo while it is on screen.
+  const feature = $('video[data-autoplay]');
+  if (feature && !reduceMotion) {
+    new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return feature.pause();
+      if (!feature.src) feature.src = feature.dataset.src;
+      feature.play().catch(() => {});
+    }, { threshold: 0.3 }).observe(feature);
+  }
+
   // Detail page: demo / screenshot tabs.
   const tabs = $$('.showcase [role="tab"]');
   const selectTab = (t) => {

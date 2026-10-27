@@ -5,7 +5,6 @@ description: KTB 4기 AX 동아리 활동 기록
 ---
 <div class="wrap page-head">
   <h1>활동 기록</h1>
-  <p class="lead">모임, 발표, 회고를 날짜순으로 남깁니다.</p>
 </div>
 <div class="wrap timeline">
   {%- assign years = site.posts | group_by_exp: 'r', "r.date | date: '%Y'" -%}

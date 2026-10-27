@@ -15,13 +15,18 @@
   };
 
   // Theme: explicit choice overrides the system setting.
-  $('.theme').addEventListener('click', () => {
-    const dark = root.dataset.theme
-      ? root.dataset.theme === 'dark'
-      : matchMedia('(prefers-color-scheme: dark)').matches;
-    root.dataset.theme = dark ? 'light' : 'dark';
+  const themeBtn = $('.theme');
+  const isDark = () => (root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches);
+  const syncTheme = () => {
+    themeBtn.setAttribute('aria-pressed', isDark());
+    if (root.dataset.theme) $$('meta[name="theme-color"]').forEach((m) => { m.content = isDark() ? '#000000' : '#f5f5f7'; });
+  };
+  themeBtn.addEventListener('click', () => {
+    root.dataset.theme = isDark() ? 'light' : 'dark';
     try { localStorage.setItem('theme', root.dataset.theme); } catch (e) {}
+    syncTheme();
   });
+  syncTheme();
 
   // Copy install commands and page links.
   const copy = async (text, msg, el) => {
@@ -48,7 +53,10 @@
       search.focus();
       search.select();
     } else if (e.key === 'Escape' && document.activeElement === search) {
-      search.blur();
+      if (search.value) {
+        search.value = '';
+        search.dispatchEvent(new Event('input'));
+      } else search.blur();
     }
   });
 

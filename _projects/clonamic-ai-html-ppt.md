@@ -1,9 +1,11 @@
 ---
 title: clonamic-ai-html-ppt
 description: Figma처럼 자유롭게 고치는 로컬 슬라이드·문서 편집기입니다. 쓰던 AI가 요소 단위로 함께 고치고, 보이는 그대로 PDF로 내보냅니다.
-thumbnail: /assets/img/clonamic-ai-html-ppt.png
+thumbnail: /assets/img/clonamic-ai-html-ppt.jpg
 demo: /assets/videos/clonamic-ai-html-ppt.mp4
-install: /plugin install clonamic-ai-html-ppt@clonamic
+install: |-
+  /plugin marketplace add clonamic/plugin
+  /plugin install clonamic-ai-html-ppt@clonamic
 repo: https://github.com/clonamic/plugin/tree/main/clonamic-ai-html-ppt
 authors: [algocean1204]
 tags: [플러그인, 슬라이드, PDF]

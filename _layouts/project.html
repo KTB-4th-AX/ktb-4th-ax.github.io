@@ -3,6 +3,7 @@ layout: default
 ---
 {%- assign p = page -%}
 {%- assign ext = p.demo | split: '.' | last | downcase -%}
+{%- assign install_show = p.install | newline_to_br | split: '<br />' | last | strip -%}
 {%- assign is_video = false -%}
 {%- if ext == 'mp4' or ext == 'webm' or ext == 'mov' -%}{%- assign is_video = true -%}{%- endif -%}
 <article class="wrap detail">
@@ -56,7 +57,7 @@ layout: default
     <aside class="facts" aria-label="정보">
       <dl>
         {%- if p.install -%}
-        <div><dt>설치</dt><dd>{% if p.install contains '://' %}<a href="{{ p.install }}">{{ p.install | remove: 'https://' | remove: 'http://' }}</a>{% else %}<button class="cmd" type="button" data-copy="{{ p.install | escape }}" aria-label="설치 명령 복사"><code>{{ p.install }}</code></button>{% endif %}</dd></div>
+        <div><dt>설치</dt><dd>{% if p.install contains '://' %}<a href="{{ p.install }}">{{ p.install | remove: 'https://' | remove: 'http://' }}</a>{% else %}<button class="cmd" type="button" data-copy="{{ p.install | escape }}" aria-label="설치 명령 복사: {{ install_show | escape }}"><code>{{ install_show }}</code></button>{% endif %}</dd></div>
         {%- endif -%}
         {%- if p.repo -%}
         <div><dt>레포지토리</dt><dd><a href="{{ p.repo }}">{{ p.repo | remove: 'https://github.com/' }}</a></dd></div>

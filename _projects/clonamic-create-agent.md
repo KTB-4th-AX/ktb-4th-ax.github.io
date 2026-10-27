@@ -1,9 +1,11 @@
 ---
 title: clonamic-create-agent
 description: 에이전트 파이프라인을 그래프로 그려 설계하고, 검토를 거쳐 바로 구현할 수 있는 한국어 설계 문서로 내보냅니다.
-thumbnail: /assets/img/clonamic-create-agent.png
+thumbnail: /assets/img/clonamic-create-agent.jpg
 demo: /assets/videos/clonamic-create-agent.mp4
-install: /plugin install clonamic-create-agent@clonamic
+install: |-
+  /plugin marketplace add clonamic/plugin
+  /plugin install clonamic-create-agent@clonamic
 repo: https://github.com/clonamic/plugin/tree/main/clonamic-create-agent
 authors: [algocean1204]
 tags: [플러그인, 에이전트 설계]

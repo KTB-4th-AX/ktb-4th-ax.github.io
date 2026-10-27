@@ -1,5 +1,6 @@
 {%- assign p = include.p -%}
 {%- assign ext = p.demo | split: '.' | last | downcase -%}
+{%- assign install_show = p.install | newline_to_br | split: '<br />' | last | strip -%}
 {%- capture names -%}{% for a in p.authors %}{% assign m = site.members | where: 'github', a | first %}{{ m.name | default: a }} {% endfor %}{%- endcapture -%}
 {%- capture text -%}{{ p.title }} {{ p.description }} {{ names }} {{ p.authors | join: ' ' }} {{ p.tags | join: ' ' }}{%- endcapture -%}
 <article class="card"
@@ -37,7 +38,7 @@
       {%- if p.install contains '://' -%}
         <a class="btn btn-get" href="{{ p.install }}">설치</a>
       {%- else -%}
-        <button class="cmd" type="button" data-copy="{{ p.install | escape }}" aria-label="설치 명령 복사: {{ p.install | escape }}"><code>{{ p.install }}</code><svg aria-hidden="true" viewBox="0 0 16 16"><path d="M5 1h8a2 2 0 0 1 2 2v8h-1.5V3a.5.5 0 0 0-.5-.5H5V1ZM3 4h7a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Zm0 1.5a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5V6a.5.5 0 0 0-.5-.5H3Z"/></svg></button>
+        <button class="cmd" type="button" data-copy="{{ p.install | escape }}" aria-label="설치 명령 복사: {{ install_show | escape }}"><code>{{ install_show }}</code><svg aria-hidden="true" viewBox="0 0 16 16"><path d="M5 1h8a2 2 0 0 1 2 2v8h-1.5V3a.5.5 0 0 0-.5-.5H5V1ZM3 4h7a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Zm0 1.5a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5V6a.5.5 0 0 0-.5-.5H3Z"/></svg></button>
       {%- endif -%}
     {%- endif -%}
     {%- if p.repo -%}

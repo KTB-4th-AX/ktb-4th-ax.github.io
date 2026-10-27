@@ -301,8 +301,7 @@ button.chip:hover { border-color: var(--muted); }
 
 /* Footer / toast -------------------------------------------------------- */
 .footer { margin-top: 80px; border-top: 1px solid var(--border); font-size: 0.8125rem; color: var(--muted); }
-.footer-inner { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-top: 20px; padding-bottom: 32px; }
-.footer a { color: var(--muted); }
+.footer p { padding-top: 20px; padding-bottom: 32px; }
 .toast {
   position: fixed; left: 50%; bottom: 28px; z-index: 30; transform: translate(-50%, 12px);
   padding: 10px 18px; border-radius: 980px; background: var(--text); color: var(--bg);

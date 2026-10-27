@@ -1,0 +1,15 @@
+---
+layout: default
+---
+<h1>{{ site.title }}</h1>
+<p>{{ site.description }}</p>
+{% for cat in site.categories %}
+<section>
+  <h2>{{ cat[0] }}</h2>
+  <ul>
+    {% for post in cat[1] %}
+    <li><a href="{{ post.url | relative_url }}">{{ post.title }}</a> <span class="meta">{{ post.date | date: "%Y-%m-%d" }}</span></li>
+    {% endfor %}
+  </ul>
+</section>
+{% endfor %}

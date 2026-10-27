@@ -1,0 +1,7 @@
+title: KTB 4th AX
+description: AX 동아리 활동 기록과 작업 결과물
+baseurl: /KTB-4th-AX
+url: https://ktb-4th-ax.github.io
+lang: ko
+permalink: /:year/:month/:day/:title/
+exclude: [README.md]

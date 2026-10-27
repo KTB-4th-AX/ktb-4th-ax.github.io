@@ -9,12 +9,11 @@
   data-tags="{{ p.tags | join: ',' | escape }}"
   data-authors="{{ p.authors | join: ',' | escape }}"
   data-date="{{ p.date | date: '%Y-%m-%d' }}">
-  {%- if p.thumbnail or p.demo %}
   <div class="card-media">
     {%- if p.thumbnail -%}
       <img src="{{ p.thumbnail | relative_url }}" alt="" loading="lazy" decoding="async">
     {%- else -%}
-      <span class="card-fallback" aria-hidden="true">{{ p.title | slice: 0 }}</span>
+      <span class="card-empty">이미지 없음</span>
     {%- endif -%}
     {%- if p.demo -%}
       {%- if ext == 'mp4' or ext == 'webm' or ext == 'mov' -%}
@@ -24,7 +23,6 @@
       {%- endif -%}
     {%- endif -%}
   </div>
-  {%- endif %}
   <div class="card-body">
     <h3 class="card-title"><a href="{{ p.url | relative_url }}">{{ p.title }}</a></h3>
     <p class="card-desc">{{ p.description }}</p>

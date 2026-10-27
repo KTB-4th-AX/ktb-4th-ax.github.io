@@ -9,9 +9,6 @@ layout: default
   <nav class="crumbs" aria-label="현재 위치"><a href="{{ '/' | relative_url }}">프로젝트</a><span aria-hidden="true">›</span><span aria-current="page">{{ p.title }}</span></nav>
 
   <header class="detail-head">
-    <div class="detail-icon" aria-hidden="true">
-      {%- if p.thumbnail -%}<img src="{{ p.thumbnail | relative_url }}" alt="">{%- else -%}<span>{{ p.title | slice: 0 }}</span>{%- endif -%}
-    </div>
     <div class="detail-title">
       <h1>{{ p.title }}</h1>
       <p class="lead">{{ p.description }}</p>

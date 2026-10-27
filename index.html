@@ -60,6 +60,7 @@ layout: default
   </ul>
 </section>
 
+{%- if site.posts.size > 0 -%}
 <section class="section wrap" aria-labelledby="h-rec">
   <div class="section-head">
     <h2 id="h-rec">활동 기록 <span class="num">{{ site.posts.size }}</span></h2>
@@ -71,3 +72,4 @@ layout: default
     {%- endfor -%}
   </ol>
 </section>
+{%- endif -%}

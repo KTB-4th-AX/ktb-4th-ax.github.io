@@ -7,6 +7,7 @@ description: KTB 4기 AX 동아리 활동 기록
   <h1>활동 기록</h1>
 </div>
 <div class="wrap timeline">
+  {%- if site.posts.size == 0 -%}<p class="muted">아직 기록이 없습니다.</p>{%- endif -%}
   {%- assign years = site.posts | group_by_exp: 'r', "r.date | date: '%Y'" -%}
   {%- for y in years -%}
   <section aria-labelledby="y{{ y.name }}">

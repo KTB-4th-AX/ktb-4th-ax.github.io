@@ -1,31 +1,33 @@
-# KTB-4th-AX
+# KTB AX
 
-AX 동아리 활동 기록과 작업 결과물 아카이브입니다. 사이트 주소: https://ktb-4th-ax.github.io/KTB-4th-AX/
+KTB 4기 AX 동아리원이 만든 플러그인·도구와 활동 기록을 모은 사이트입니다.
 
-## 기록 추가
+## 추가하기
 
-1. `_posts/YYYY-MM-DD-제목.md` 파일을 만듭니다.
+| 무엇을 | 어디에 | 템플릿 |
+|---|---|---|
+| 프로젝트 카드 | `_projects/이름.md` | `templates/project.md` |
+| 동아리원 | `_members/github-아이디.md` | `templates/member.md` |
+| 활동 기록 | `_posts/YYYY-MM-DD-제목.md` | 아래 예시 |
 
-   ```markdown
-   ---
-   layout: default
-   title: 제목
-   category: 기록        # 기록 또는 결과물
-   video: /assets/videos/YYYY-MM-DD-제목.mp4   # 영상이 없으면 이 줄은 지웁니다
-   ---
-   본문 (마크다운)
-   ```
+활동 기록 예시:
 
-2. 영상은 50MB 이하로 압축해서 `assets/videos/`에 넣습니다.
+```markdown
+---
+title: 3주차 모임
+video: /assets/videos/2026-11-10-week3.mp4   # 영상이 없으면 지웁니다
+---
+본문 (마크다운)
+```
 
-   ```sh
-   ffmpeg -i 원본.mov -vf scale=-2:720 -c:v libx264 -crf 28 -preset slow -c:a aac -b:a 128k -movflags +faststart assets/videos/YYYY-MM-DD-제목.mp4
-   ```
+이미지는 `assets/img/`, 영상은 `assets/videos/`에 둡니다. `main`에 push하면 GitHub Pages가 자동으로 빌드합니다.
 
-3. `main`에 push하면 GitHub Pages가 자동으로 빌드합니다.
+## 영상 압축
 
-## 제한
+파일당 100MB 제한(50MB부터 경고)과 사이트 전체 1GB 제한이 있습니다. Git LFS 파일은 Pages에서 서빙되지 않으니 쓰지 마세요.
 
-- 파일당 100MB 제한이 있고 50MB부터 경고가 뜹니다. 사이트 전체는 1GB까지입니다.
-- Git LFS 파일은 Pages에서 서빙되지 않으므로 LFS를 쓰지 마세요.
-- 전체 용량이 1GB에 가까워지면 큰 영상은 YouTube 미등록 링크로 옮겨야 합니다.
+```sh
+ffmpeg -i 원본.mov -vf scale=-2:720 -c:v libx264 -crf 28 -preset slow -c:a aac -b:a 128k -movflags +faststart assets/videos/이름.mp4
+```
+
+전체 용량이 1GB에 가까워지면 큰 영상은 YouTube 미등록 링크로 옮깁니다.

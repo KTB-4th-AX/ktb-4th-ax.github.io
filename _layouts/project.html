@@ -1,0 +1,79 @@
+---
+layout: default
+---
+{%- assign p = page -%}
+{%- assign ext = p.demo | split: '.' | last | downcase -%}
+{%- assign is_video = false -%}
+{%- if ext == 'mp4' or ext == 'webm' or ext == 'mov' -%}{%- assign is_video = true -%}{%- endif -%}
+<article class="wrap detail">
+  <nav class="crumbs" aria-label="현재 위치"><a href="{{ '/plugins/' | relative_url }}">프로젝트</a><span aria-hidden="true">›</span><span aria-current="page">{{ p.title }}</span></nav>
+
+  <header class="detail-head">
+    <div class="detail-icon" aria-hidden="true">
+      {%- if p.thumbnail -%}<img src="{{ p.thumbnail | relative_url }}" alt="">{%- else -%}<span>{{ p.title | slice: 0 }}</span>{%- endif -%}
+    </div>
+    <div class="detail-title">
+      <h1>{{ p.title }}</h1>
+      <p class="lead">{{ p.description }}</p>
+    </div>
+    <div class="detail-actions">
+      {%- if p.install -%}
+        {%- if p.install contains '://' -%}
+          <a class="btn btn-primary" href="{{ p.install }}">설치</a>
+        {%- else -%}
+          <button class="btn btn-primary" type="button" data-copy="{{ p.install | escape }}">설치 명령 복사</button>
+        {%- endif -%}
+      {%- endif -%}
+      {%- if p.repo -%}<a class="btn btn-secondary" href="{{ p.repo }}">{% include github.svg %}GitHub</a>{%- endif -%}
+      <button class="icon-btn" type="button" data-share aria-label="이 페이지 링크 복사"><svg aria-hidden="true" viewBox="0 0 16 16"><path d="m7.78 3.28 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .75.75 0 0 1 1.06-1.06 2 2 0 0 0 2.83 0l2.5-2.5a2 2 0 0 0-2.83-2.83L8.84 4.34a.75.75 0 0 1-1.06-1.06Zm-4.7 9.64a2 2 0 0 0 2.83 0l1.25-1.25a.75.75 0 0 1 1.06 1.06l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .75.75 0 0 1-1.06 1.06 2 2 0 0 0-2.83 0l-2.5 2.5a2 2 0 0 0 0 2.83Z"/></svg></button>
+    </div>
+  </header>
+
+  {%- if p.demo or p.thumbnail -%}
+  <section class="showcase" aria-label="미리보기">
+    {%- if p.demo and p.thumbnail -%}
+    <div class="segmented" role="tablist" aria-label="미리보기 종류">
+      <button type="button" role="tab" id="t-demo" aria-controls="m-demo" aria-selected="true">동작 {% if is_video %}영상{% else %}화면{% endif %}</button>
+      <button type="button" role="tab" id="t-shot" aria-controls="m-shot" aria-selected="false" tabindex="-1">샘플 이미지</button>
+    </div>
+    {%- endif -%}
+    {%- if p.demo -%}
+    <div class="stage" id="m-demo" role="tabpanel" aria-labelledby="t-demo">
+      {%- if is_video -%}
+        <video controls playsinline preload="metadata" {% if p.thumbnail %}poster="{{ p.thumbnail | relative_url }}"{% endif %} src="{{ p.demo | relative_url }}"></video>
+      {%- else -%}
+        <img src="{{ p.demo | relative_url }}" alt="{{ p.title | escape }} 동작 화면">
+      {%- endif -%}
+    </div>
+    {%- endif -%}
+    {%- if p.thumbnail -%}
+    <div class="stage" id="m-shot" role="tabpanel" aria-labelledby="t-shot"{% if p.demo %} hidden{% endif %}>
+      <img src="{{ p.thumbnail | relative_url }}" alt="{{ p.title | escape }} 샘플 이미지">
+    </div>
+    {%- endif -%}
+  </section>
+  {%- endif -%}
+
+  <div class="detail-body">
+    <div class="prose">{{ content }}</div>
+    <aside class="facts" aria-label="정보">
+      <dl>
+        {%- if p.install -%}
+        <div><dt>설치</dt><dd>{% if p.install contains '://' %}<a href="{{ p.install }}">{{ p.install | remove: 'https://' | remove: 'http://' }}</a>{% else %}<button class="cmd" type="button" data-copy="{{ p.install | escape }}" aria-label="설치 명령 복사"><code>{{ p.install }}</code></button>{% endif %}</dd></div>
+        {%- endif -%}
+        {%- if p.repo -%}
+        <div><dt>레포지토리</dt><dd><a href="{{ p.repo }}">{{ p.repo | remove: 'https://github.com/' }}</a></dd></div>
+        {%- endif -%}
+        <div><dt>만든 사람</dt><dd><ul class="card-authors">
+          {%- for a in p.authors -%}{%- assign m = site.members | where: 'github', a | first -%}
+          <li><a href="{% if m %}{{ m.url | relative_url }}{% else %}https://github.com/{{ a }}{% endif %}"><img src="https://github.com/{{ a }}.png?size=48" alt="" width="20" height="20">{{ m.name | default: a }}</a></li>
+          {%- endfor -%}
+        </ul></dd></div>
+        {%- if p.tags.size > 0 -%}
+        <div><dt>태그</dt><dd class="tag-list">{% for t in p.tags %}<a class="chip" href="{{ '/plugins/' | relative_url }}?tag={{ t | url_encode }}">{{ t }}</a>{% endfor %}</dd></div>
+        {%- endif -%}
+        <div><dt>등록일</dt><dd><time datetime="{{ p.date | date: '%Y-%m-%d' }}">{{ p.date | date: '%Y년 %-m월 %-d일' }}</time></dd></div>
+      </dl>
+    </aside>
+  </div>
+</article>

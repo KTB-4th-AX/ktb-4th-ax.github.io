@@ -1,0 +1,35 @@
+---
+layout: default
+---
+{%- assign m = page -%}
+{%- assign mine = site.projects | where_exp: 'p', 'p.authors contains m.github' | sort: 'date' | reverse -%}
+<div class="wrap">
+  <nav class="crumbs" aria-label="현재 위치"><a href="{{ '/members/' | relative_url }}">동아리원</a><span aria-hidden="true">›</span><span aria-current="page">{{ m.name }}</span></nav>
+  <header class="profile">
+    <img src="https://github.com/{{ m.github }}.png?size=256" alt="" width="128" height="128">
+    <div>
+      <h1>{{ m.name }}</h1>
+      {% if m.role %}<p class="muted">{{ m.role }}</p>{% endif %}
+      {% if m.bio %}<p class="lead">{{ m.bio }}</p>{% endif %}
+      <p><a class="btn btn-secondary" href="https://github.com/{{ m.github }}">{% include github.svg %}@{{ m.github }}</a></p>
+    </div>
+  </header>
+
+  {%- if content != '' -%}<div class="prose">{{ content }}</div>{%- endif -%}
+
+  <section class="section" aria-labelledby="h-mine">
+    <div class="section-head"><h2 id="h-mine">만든 프로젝트</h2><span class="muted">{{ mine.size }}개</span></div>
+    {%- if mine.size > 0 -%}
+    <div class="grid">{%- for p in mine -%}{% include card.html p=p %}{%- endfor -%}</div>
+    {%- else -%}
+    <p class="muted">아직 등록한 프로젝트가 없습니다.</p>
+    {%- endif -%}
+  </section>
+
+  <section class="section" aria-labelledby="h-repos">
+    <div class="section-head"><h2 id="h-repos">GitHub 레포지토리</h2><a class="more" href="https://github.com/{{ m.github }}?tab=repositories">GitHub에서 모두 보기 <span aria-hidden="true">›</span></a></div>
+    <div class="repos" data-github-repos="{{ m.github }}">
+      <p class="muted">레포지토리를 불러오는 중입니다.</p>
+    </div>
+  </section>
+</div>

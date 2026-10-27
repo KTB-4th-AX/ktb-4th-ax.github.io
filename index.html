@@ -1,15 +1,47 @@
 ---
 layout: default
 ---
-<h1>{{ site.title }}</h1>
-<p>{{ site.description }}</p>
-{% for cat in site.categories %}
-<section>
-  <h2>{{ cat[0] }}</h2>
-  <ul>
-    {% for post in cat[1] %}
-    <li><a href="{{ post.url | relative_url }}">{{ post.title }}</a> <span class="meta">{{ post.date | date: "%Y-%m-%d" }}</span></li>
-    {% endfor %}
+{%- assign projects = site.projects | sort: 'date' | reverse -%}
+<section class="hero wrap">
+  <h1>동아리원이 만든 도구를<br>한곳에서 찾고 설치하세요.</h1>
+  <p class="lead">카카오테크 부트캠프 4기 AX 동아리의 플러그인, 자동화 도구, 활동 기록을 모았습니다.</p>
+  <div class="hero-actions">
+    <a class="btn btn-primary" href="{{ '/plugins/' | relative_url }}">프로젝트 둘러보기</a>
+    <a class="btn btn-link" href="{{ '/members/' | relative_url }}">동아리원 보기 <span aria-hidden="true">›</span></a>
+  </div>
+  <p class="hero-stats">프로젝트 {{ site.projects.size }}개 · 동아리원 {{ site.members.size }}명 · 활동 기록 {{ site.posts.size }}건</p>
+</section>
+
+<section class="section wrap" aria-labelledby="h-new">
+  <div class="section-head">
+    <h2 id="h-new">새로 올라온 프로젝트</h2>
+    <a class="more" href="{{ '/plugins/' | relative_url }}">전체 보기 <span aria-hidden="true">›</span></a>
+  </div>
+  <div class="grid">
+    {%- for p in projects limit: 6 -%}{% include card.html p=p %}{%- endfor -%}
+  </div>
+</section>
+
+<section class="section wrap" aria-labelledby="h-people">
+  <div class="section-head">
+    <h2 id="h-people">동아리원</h2>
+    <a class="more" href="{{ '/members/' | relative_url }}">전체 보기 <span aria-hidden="true">›</span></a>
+  </div>
+  <ul class="people-row">
+    {%- for m in site.members -%}
+    <li><a href="{{ m.url | relative_url }}"><img src="https://github.com/{{ m.github }}.png?size=160" alt="" width="72" height="72" loading="lazy"><span>{{ m.name }}</span></a></li>
+    {%- endfor -%}
   </ul>
 </section>
-{% endfor %}
+
+<section class="section wrap" aria-labelledby="h-rec">
+  <div class="section-head">
+    <h2 id="h-rec">최근 활동 기록</h2>
+    <a class="more" href="{{ '/records/' | relative_url }}">전체 보기 <span aria-hidden="true">›</span></a>
+  </div>
+  <ol class="rows">
+    {%- for r in site.posts limit: 4 -%}
+    <li><a href="{{ r.url | relative_url }}"><time datetime="{{ r.date | date: '%Y-%m-%d' }}">{{ r.date | date: '%Y.%m.%d' }}</time><span class="row-title">{{ r.title }}</span>{% if r.video %}<span class="row-tag">영상</span>{% endif %}</a></li>
+    {%- endfor -%}
+  </ol>
+</section>

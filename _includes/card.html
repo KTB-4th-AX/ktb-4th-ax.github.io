@@ -1,0 +1,47 @@
+{%- assign p = include.p -%}
+{%- assign ext = p.demo | split: '.' | last | downcase -%}
+{%- capture names -%}{% for a in p.authors %}{% assign m = site.members | where: 'github', a | first %}{{ m.name | default: a }} {% endfor %}{%- endcapture -%}
+{%- capture text -%}{{ p.title }} {{ p.description }} {{ names }} {{ p.authors | join: ' ' }} {{ p.tags | join: ' ' }}{%- endcapture -%}
+<article class="card"
+  data-title="{{ p.title | escape }}"
+  data-text="{{ text | downcase | escape }}"
+  data-tags="{{ p.tags | join: ',' | escape }}"
+  data-authors="{{ p.authors | join: ',' | escape }}"
+  data-date="{{ p.date | date: '%Y-%m-%d' }}">
+  <div class="card-media">
+    {%- if p.thumbnail -%}
+      <img src="{{ p.thumbnail | relative_url }}" alt="" loading="lazy" decoding="async">
+    {%- else -%}
+      <span class="card-fallback" aria-hidden="true">{{ p.title | slice: 0 }}</span>
+    {%- endif -%}
+    {%- if p.demo -%}
+      {%- if ext == 'mp4' or ext == 'webm' or ext == 'mov' -%}
+        <video muted loop playsinline preload="none" data-src="{{ p.demo | relative_url }}" aria-hidden="true"></video>
+      {%- else -%}
+        <img class="card-demo" data-src="{{ p.demo | relative_url }}" alt="" aria-hidden="true">
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+  <div class="card-body">
+    <h3 class="card-title"><a href="{{ p.url | relative_url }}">{{ p.title }}</a></h3>
+    <p class="card-desc">{{ p.description }}</p>
+    <ul class="card-authors" aria-label="만든 사람">
+      {%- for a in p.authors -%}
+      {%- assign m = site.members | where: 'github', a | first -%}
+      <li><img src="https://github.com/{{ a }}.png?size=48" alt="" width="20" height="20" loading="lazy">{{ m.name | default: a }}</li>
+      {%- endfor -%}
+    </ul>
+  </div>
+  <div class="card-actions">
+    {%- if p.install -%}
+      {%- if p.install contains '://' -%}
+        <a class="btn btn-get" href="{{ p.install }}">설치</a>
+      {%- else -%}
+        <button class="cmd" type="button" data-copy="{{ p.install | escape }}" aria-label="설치 명령 복사: {{ p.install | escape }}"><code>{{ p.install }}</code><svg aria-hidden="true" viewBox="0 0 16 16"><path d="M5 1h8a2 2 0 0 1 2 2v8h-1.5V3a.5.5 0 0 0-.5-.5H5V1ZM3 4h7a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Zm0 1.5a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5V6a.5.5 0 0 0-.5-.5H3Z"/></svg></button>
+      {%- endif -%}
+    {%- endif -%}
+    {%- if p.repo -%}
+      <a class="icon-btn" href="{{ p.repo }}" aria-label="{{ p.title | escape }} GitHub 레포지토리">{% include github.svg %}</a>
+    {%- endif -%}
+  </div>
+</article>

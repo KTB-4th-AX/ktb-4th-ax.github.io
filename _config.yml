@@ -1,7 +1,25 @@
-title: KTB 4th AX
-description: AX 동아리 활동 기록과 작업 결과물
-baseurl: /KTB-4th-AX
-url: https://ktb-4th-ax.github.io
+# url/baseurl은 GitHub Pages가 레포 이름에 맞춰 자동으로 채운다.
+title: KTB AX
+description: 카카오테크 부트캠프 4기 AX 동아리가 만든 도구와 활동 기록
 lang: ko
-permalink: /:year/:month/:day/:title/
-exclude: [README.md]
+timezone: Asia/Seoul
+markdown: kramdown
+permalink: /records/:year/:month/:day/:title/
+
+collections:
+  projects:
+    output: true
+    permalink: /plugins/:name/
+  members:
+    output: true
+    permalink: /members/:name/
+
+defaults:
+  - scope: { type: projects }
+    values: { layout: project }
+  - scope: { type: members }
+    values: { layout: member }
+  - scope: { type: posts }
+    values: { layout: record }
+
+exclude: [README.md, templates]

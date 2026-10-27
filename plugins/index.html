@@ -1,0 +1,69 @@
+---
+layout: default
+title: 프로젝트
+description: KTB 4기 AX 동아리원이 만든 플러그인과 도구 전체 목록
+---
+{%- assign projects = site.projects | sort: 'date' | reverse -%}
+{%- assign tags = site.projects | map: 'tags' | join: ',' | split: ',' | uniq | sort -%}
+<div class="wrap page-head">
+  <h1>프로젝트</h1>
+  <p class="lead">동아리원이 만든 플러그인과 도구입니다. 카드를 누르면 동작 영상과 설치 방법을 볼 수 있습니다.</p>
+</div>
+
+<div class="wrap catalog" id="catalog">
+  <div class="toolbar">
+    <div class="segmented" role="group" aria-label="보기 방식">
+      <button type="button" data-view="all" aria-pressed="true">모든 프로젝트</button>
+      <button type="button" data-view="people" aria-pressed="false">사람별 보기</button>
+    </div>
+    <div class="toolbar-right">
+      <label class="select"><span class="sr-only">동아리원</span>
+        <select data-filter="author">
+          <option value="">모든 동아리원</option>
+          {%- for m in site.members -%}<option value="{{ m.github }}">{{ m.name }}</option>{%- endfor -%}
+        </select>
+      </label>
+      <label class="select"><span class="sr-only">정렬</span>
+        <select data-filter="sort">
+          <option value="new">최신순</option>
+          <option value="name">이름순</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  {%- if tags.size > 0 -%}
+  <div class="chips" role="group" aria-label="태그">
+    <button type="button" class="chip" data-tag="" aria-pressed="true">전체</button>
+    {%- for t in tags -%}<button type="button" class="chip" data-tag="{{ t | escape }}" aria-pressed="false">{{ t }}</button>{%- endfor -%}
+  </div>
+  {%- endif -%}
+
+  <p class="count" aria-live="polite"><span data-count>{{ site.projects.size }}</span>개 프로젝트</p>
+
+  <div data-panel="all">
+    <div class="grid">
+      {%- for p in projects -%}{% include card.html p=p %}{%- endfor -%}
+    </div>
+  </div>
+
+  <div data-panel="people" hidden>
+    {%- for m in site.members -%}
+    {%- assign mine = projects | where_exp: 'p', 'p.authors contains m.github' -%}
+    <section class="group" data-group="{{ m.github }}">
+      <a class="group-head" href="{{ m.url | relative_url }}">
+        <img src="https://github.com/{{ m.github }}.png?size=96" alt="" width="40" height="40" loading="lazy">
+        <span><strong>{{ m.name }}</strong>{% if m.role %}<small>{{ m.role }}</small>{% endif %}</span>
+      </a>
+      <div class="grid">
+        {%- for p in mine -%}{% include card.html p=p %}{%- endfor -%}
+      </div>
+    </section>
+    {%- endfor -%}
+  </div>
+
+  <div class="empty" hidden>
+    <p>조건에 맞는 프로젝트가 없습니다.</p>
+    <button type="button" class="btn btn-secondary" data-reset>필터 초기화</button>
+  </div>
+</div>
